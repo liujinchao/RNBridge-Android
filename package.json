@@ -1,0 +1,17 @@
+{
+  "name": "rnbridge-android",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "react": "16.8.3",
+    "react-native": "0.59.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

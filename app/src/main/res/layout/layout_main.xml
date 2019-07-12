@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingTop="20dp">
+        <TextView
+            android:id="@+id/toRN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="跳转RN"/>
+
+        <TextView
+            android:id="@+id/loadRN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="在当前页面加载RN"/>
+
+        <TextView
+            android:id="@+id/sendmsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="sendObject to RN"/>
+        <TextView
+            android:id="@+id/sendmap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="sendmap to RN"/>
+
+        <TextView
+            android:id="@+id/sendList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="sendlist to RN"/>
+    </LinearLayout>
+
+    <com.facebook.react.ReactRootView
+        android:id="@+id/rrv_rn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.facebook.react.ReactRootView>
+</LinearLayout>
