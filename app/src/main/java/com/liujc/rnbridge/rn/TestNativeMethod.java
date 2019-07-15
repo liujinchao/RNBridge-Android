@@ -1,4 +1,4 @@
-package com.liujc.rnbridge;
+package com.liujc.rnbridge.rn;
 
 import android.app.Activity;
 import android.content.Intent;

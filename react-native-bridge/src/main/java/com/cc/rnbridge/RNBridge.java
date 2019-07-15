@@ -11,6 +11,7 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.uimanager.UIImplementationProvider;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -86,14 +87,15 @@ public class RNBridge {
                             String jsMainMoudlePath){
         setRootView(getApplication(), mReactRootView, moduleName, bundleAssetName, jsMainMoudlePath, isDebug(), getReactPackages());
     }
-
-    public void setRootView(Application mApplication,
-                            ReactRootView mReactRootView,
+    public void setRootView(ReactRootView mReactRootView,
                             String moduleName,
-                            boolean debug,
-                            List<ReactPackage> reactPackages){
-        setRootView(mApplication, mReactRootView, moduleName, null,null, debug, reactPackages);
+                            String bundleFilePath,
+                            String bundleAssetName,
+                            String jsMainMoudlePath){
+        setRootView(getApplication(), mReactRootView, moduleName,bundleFilePath, bundleAssetName, jsMainMoudlePath, isDebug(), getReactPackages());
     }
+
+
 
     public void setRootView(Application mApplication,
                             ReactRootView mReactRootView,
@@ -113,7 +115,7 @@ public class RNBridge {
                             String jsMainMoudlePath,
                             boolean debug,
                             List<ReactPackage> reactPackages){
-        if (getReactInstanceManager() == null){
+//        if (getReactInstanceManager() == null){
             ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
                     .setApplication(mApplication)
                     .setUseDeveloperSupport(debug)
@@ -131,7 +133,7 @@ public class RNBridge {
                 builder.addPackages(reactPackages);
             }
             mReactInstanceManager = builder.build();
-        }
+//        }
         startReactApplication(mReactRootView, moduleName);
     }
 
@@ -152,7 +154,14 @@ public class RNBridge {
     }
 
     private String getJSBundleFile(String bundleFile) {
-        return bundleFile;
+        if (TextUtils.isEmpty(bundleFile)){
+            return null;
+        }
+        File localBundleFile = new File(bundleFile);
+        if(localBundleFile.exists()){
+            return localBundleFile.getAbsolutePath();
+        }
+        return null;
     }
 
     private String getJSMainModuleName(String jsMainMoudlePath) {
@@ -165,4 +174,5 @@ public class RNBridge {
     public ReactInstanceManager getReactInstanceManager(){
         return mReactInstanceManager;
     }
+
 }

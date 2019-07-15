@@ -1,4 +1,4 @@
-package com.liujc.rnbridge;
+package com.liujc.rnbridge.rn;
 
 import java.io.Serializable;
 

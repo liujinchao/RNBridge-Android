@@ -9,7 +9,7 @@ import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @ClassName:  RNArrayUtil
@@ -87,77 +87,24 @@ public class RNArrayUtil {
      * @return
      */
     public static Object[] toArray(ReadableArray readableArray) {
-        Object[] array = new Object[readableArray.size()];
-        for (int i = 0; i < readableArray.size(); i++) {
-            ReadableType type = readableArray.getType(i);
-
-            switch (type) {
-                case Null:
-                    array[i] = null;
-                    break;
-                case Boolean:
-                    array[i] = readableArray.getBoolean(i);
-                    break;
-                case Number:
-                    array[i] = readableArray.getDouble(i);
-                    break;
-                case String:
-                    array[i] = readableArray.getString(i);
-                    break;
-                case Map:
-                    array[i] = RNMapUtil.toMap(readableArray.getMap(i));
-                    break;
-                case Array:
-                    array[i] = RNArrayUtil.toArray(readableArray.getArray(i));
-                    break;
-            }
-        }
-
-        return array;
-    }
-
-    /**
-     * Object[] 转 WritableArray
-     * @param array
-     * @return
-     */
-    public static WritableArray toWritableArray(Object[] array) {
-        WritableArray writableArray = Arguments.createArray();
-
-        for (int i = 0; i < array.length; i++) {
-            Object value = array[i];
-
-            if (value == null) {
-                writableArray.pushNull();
-            }
-            if (value instanceof Boolean) {
-                writableArray.pushBoolean((Boolean) value);
-            }
-            if (value instanceof Double) {
-                writableArray.pushDouble((Double) value);
-            }
-            if (value instanceof Integer) {
-                writableArray.pushInt((Integer) value);
-            }
-            if (value instanceof String) {
-                writableArray.pushString((String) value);
-            }
-            if (value instanceof Map) {
-                writableArray.pushMap(RNMapUtil.toWritableMap((Map<String, Object>) value));
-            }
-            if (value.getClass().isArray()) {
-                writableArray.pushArray(RNArrayUtil.toWritableArray((Object[]) value));
-            }
-        }
-
-        return writableArray;
+        return toArrayList(readableArray).toArray();
     }
 
     public static WritableArray toWritableArray(ArrayList arrayList) {
-        if (arrayList != null && arrayList.size() > 0){
-            return toWritableArray(arrayList.toArray());
-        }
-        return Arguments.createArray();
+        return Arguments.fromList(arrayList);
     }
 
+    public static ArrayList toArrayList(ReadableArray readableArray) {
+        return Arguments.toList(readableArray);
+    }
+    public static WritableArray toWritableArray(Object[] args) {
+        return Arguments.fromJavaArgs(args);
+    }
+    public static WritableArray toWritableArray(Object array) {
+        return Arguments.fromArray(array);
+    }
+
+    public static WritableArray toWritableArray(List objects) {
+        return Arguments.makeNativeArray(objects);
+    }
 }

@@ -9,38 +9,70 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:paddingTop="20dp">
-        <TextView
-            android:id="@+id/toRN"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="跳转RN"/>
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/toRN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="跳转RN-rn_test"/>
 
-        <TextView
-            android:id="@+id/loadRN"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="在当前页面加载RN"/>
+            <TextView
+                android:id="@+id/toRN2"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="跳转RN-rn_test有图片"/>
 
-        <TextView
-            android:id="@+id/sendmsg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="sendObject to RN"/>
-        <TextView
-            android:id="@+id/sendmap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="sendmap to RN"/>
+            <TextView
+                android:id="@+id/toRNTest3"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="跳转RN-rn_test3"/>
 
-        <TextView
-            android:id="@+id/sendList"
+            <TextView
+                android:id="@+id/loadRN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="在当前页面加载RN"/>
+
+            <TextView
+                android:id="@+id/toRNSetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="RN调试工具页"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="sendlist to RN"/>
+            android:orientation="vertical"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/sendmsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="sendObject to RN"/>
+            <TextView
+                android:id="@+id/sendmap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="sendmap to RN"/>
+
+            <TextView
+                android:id="@+id/sendList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="sendlist to RN"/>
+        </LinearLayout>
     </LinearLayout>
 
     <com.facebook.react.ReactRootView
