@@ -12,6 +12,7 @@ import com.cc.rnbridge.util.RNEventEmitter;
 import com.cc.rnbridge.util.RNMapUtil;
 import com.facebook.react.ReactRootView;
 import com.liujc.rnbridge.rn.TestEvent;
+import com.liujc.rnbridge.util.SpUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.layout_main);
         initView();
         initData();
+        initTestBundle();
+    }
+
+    private void initTestBundle() {
+        TextView toRNTestOne = findViewById(R.id.toRNTestOne1);
+        toRNTestOne.setOnClickListener(v -> {
+            SpUtil.setBundleVersion(MainActivity.this,RNTest3Activity.KEY_BUNDLE_ONE, "1.0.1");
+            RNTest3Activity.startActivity(MainActivity.this, RNTest3Activity.KEY_BUNDLE_ONE,"1.0.1");
+        });
+        TextView toRNTestOne2 = findViewById(R.id.toRNTestOne2);
+        toRNTestOne2.setOnClickListener(v -> {
+            SpUtil.setBundleVersion(MainActivity.this,RNTest3Activity.KEY_BUNDLE_ONE, "1.0.2");
+            RNTest3Activity.startActivity(MainActivity.this, RNTest3Activity.KEY_BUNDLE_ONE,"1.0.2");
+        });
+        TextView toRNTestOne3 = findViewById(R.id.toRNTestOne3);
+        toRNTestOne3.setOnClickListener(v -> {
+            SpUtil.setBundleVersion(MainActivity.this,RNTest3Activity.KEY_BUNDLE_ONE, "1.0.3");
+            RNTest3Activity.startActivity(MainActivity.this, RNTest3Activity.KEY_BUNDLE_ONE,"1.0.3");
+        });
+        TextView toRNTestTwo = findViewById(R.id.toRNTestTwo);
+        toRNTestTwo.setOnClickListener(v -> {
+            RNTest3Activity.startActivity(MainActivity.this, RNTest3Activity.KEY_BUNDLE_TWO, BuildConfig.BUNDLE_TWO_VERSION);
+        });
+        TextView toRNTestTwo2 = findViewById(R.id.toRNTestTwo2);
+        toRNTestTwo2.setOnClickListener(v -> {
+            SpUtil.setBundleVersion(MainActivity.this,RNTest3Activity.KEY_BUNDLE_TWO, "1.0.2");
+            RNTest3Activity.startActivity(MainActivity.this, RNTest3Activity.KEY_BUNDLE_TWO,"1.0.2");
+        });
+        TextView toRNTestTwo3 = findViewById(R.id.toRNTestTwo3);
+        toRNTestTwo3.setOnClickListener(v -> {
+            SpUtil.setBundleVersion(MainActivity.this,RNTest3Activity.KEY_BUNDLE_TWO, "1.0.3");
+            RNTest3Activity.startActivity(MainActivity.this, RNTest3Activity.KEY_BUNDLE_TWO,"1.0.3");
+        });
+        TextView toRNTestThree = findViewById(R.id.toRNTestThree);
+        toRNTestThree.setOnClickListener(v -> {
+            RNTest3Activity.startActivity(MainActivity.this);
+        });
     }
 
     private void initData() {
@@ -46,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         toRN2.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RN2Activity.class)));
 
         toRNTest3 = findViewById(R.id.toRNTest3);
-        toRNTest3.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RNTest3Activity.class)));
+        toRNTest3.setOnClickListener(v -> RNTest3Activity.startActivity(MainActivity.this));
 
         toRNSetting = findViewById(R.id.toRNSetting);
         toRNSetting.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, com.facebook.react.devsupport.DevSettingsActivity.class)));
