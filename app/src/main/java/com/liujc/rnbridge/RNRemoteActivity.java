@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.cc.rnbridge.RNBridge;
+import com.cc.rnbridge.entity.BundleConfig;
 import com.cc.rnbridge.util.RNBundleUtil;
 import com.facebook.react.ReactRootView;
 import com.liujc.rnbridge.util.BundleVersionInfo;
@@ -16,8 +17,6 @@ import com.liujc.rnbridge.util.net.CommonService;
 import com.liujc.rnbridge.util.net.NetHelper;
 
 import java.io.File;
-
-import javax.annotation.Nonnull;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -28,7 +27,7 @@ import io.reactivex.schedulers.Schedulers;
  * @date 2019/7/13
  * @Description (这里用一句话描述这个类的作用)
  */
-public class RNTest3Activity extends AppCompatActivity {
+public class RNRemoteActivity extends AppCompatActivity {
     private ReactRootView mReactRootView;
 
     public static final String KEY_BUNDLE_ID = "bundleId";
@@ -70,12 +69,12 @@ public class RNTest3Activity extends AppCompatActivity {
     }
 
     public static void startActivity(Context context,
-                                     @Nonnull Integer bundleId,
-                                     @Nonnull String bundleVersion,
-                                     @Nonnull String moduleName,
-                                     @Nonnull String bundleAssetName,
-                                     @Nonnull String jsMainMoudlePath){
-        Intent intent = new Intent(context, RNTest3Activity.class);
+                                     Integer bundleId,
+                                     String bundleVersion,
+                                     String moduleName,
+                                     String bundleAssetName,
+                                     String jsMainMoudlePath){
+        Intent intent = new Intent(context, RNRemoteActivity.class);
         intent.putExtra(KEY_BUNDLE_ID, bundleId);
         intent.putExtra(KEY_BUNDLE_VERSION, bundleVersion);
         intent.putExtra(KEY_MODULE_NAME, moduleName);
@@ -107,8 +106,8 @@ public class RNTest3Activity extends AppCompatActivity {
 //        RNBridge.getInstance().setRootView(mReactRootView, "rnTest3","rnTestThree.bundle","rnTestThree");
 
 //        loadBundle();
-//        updateJsBundle();
-        testLocalUpdate();
+        updateJsBundle();
+//        testLocalUpdate();
     }
 
     private void loadBundle(){
@@ -117,12 +116,18 @@ public class RNTest3Activity extends AppCompatActivity {
         if(bundleFile.exists()){
             bundlePath = bundleFile.getAbsolutePath();
         }
-        RNBridge.getInstance().setRootView(mReactRootView, "rnTest3", bundlePath,"rnTestThree.bundle","rnTestThree");
+        RNBridge.getInstance().setRootView(mReactRootView,
+                new BundleConfig.BundleConfigBuild()
+                        .setModuleName("rnTest3")
+                        .setBundlePath(bundlePath)
+                        .setBundleAssetName("rnTestThree.bundle")
+                        .setJsMainMoudlePath("rnTestThree")
+                        .build());
     }
 
     private void updateJsBundle(){
-//        String currentBundleVersion = SpUtil.getBundleVersion(RNTest3Activity.this, bundleId);
-        if (!RNBundleUtil.checkPermission(RNTest3Activity.this, new String[]{
+//        String currentBundleVersion = SpUtil.getBundleVersion(RNRemoteActivity.this, bundleId);
+        if (!RNBundleUtil.checkPermission(RNRemoteActivity.this, new String[]{
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1001)){
             return;
@@ -174,7 +179,7 @@ public class RNTest3Activity extends AppCompatActivity {
     }
 
     private void showMsg(String msg){
-        Toast.makeText(RNTest3Activity.this, msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(RNRemoteActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void downLoadBundle(String bundleUrl) {
@@ -187,7 +192,13 @@ public class RNTest3Activity extends AppCompatActivity {
         if(bundleFile.exists()){
             bundlePath = bundleFile.getAbsolutePath();
         }
-        RNBridge.getInstance().setRootView(mReactRootView, moduleName, bundlePath, bundleAssetName, jsMainMoudlePath);
+        RNBridge.getInstance().setRootView(mReactRootView,
+                new BundleConfig.BundleConfigBuild()
+                        .setModuleName(moduleName)
+                        .setBundlePath(bundlePath)
+                        .setBundleAssetName(bundleAssetName)
+                        .setJsMainMoudlePath(jsMainMoudlePath)
+                        .build());
     }
 
     @Override

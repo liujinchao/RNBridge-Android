@@ -1,5 +1,6 @@
-package com.cc.rnbridge.base;
+package com.cc.rnbridge.moudles;
 
+import com.cc.rnbridge.base.BaseNativeMethod;
 import com.cc.rnbridge.util.RNEventEmitter;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
@@ -25,11 +26,13 @@ public abstract class BaseReactPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(@Nonnull ReactApplicationContext reactContext) {
         RNEventEmitter.setReactContext(reactContext);
         List<NativeModule> nativeModules = new ArrayList<>();
-        nativeModules.add(new BaseNativeModule(reactContext, getNativeMethod(), getBridgeModuleName()));
+        nativeModules.add(new BridgeNativeModule(reactContext, getNativeMethod(), getBridgeModuleName()));
+
         List<NativeModule> tmpModules = getNativeModules(reactContext);
         if (tmpModules != null && tmpModules.size() > 0){
             nativeModules.addAll(tmpModules);
         }
+
         return nativeModules;
     }
 
@@ -42,12 +45,25 @@ public abstract class BaseReactPackage implements ReactPackage {
         return Arrays.asList();
     }
 
+    /**
+     * app端自己实现的给RN使用的方法，
+     * @param reactContext
+     * @return
+     */
     protected abstract List<NativeModule> getNativeModules(ReactApplicationContext reactContext);
 
     protected abstract List<ViewManager> getViewManagers();
 
+    /**
+     * 返回app端需要实现的方法
+     * @return
+     */
     protected abstract BaseNativeMethod getNativeMethod();
 
+    /**
+     * RN中使用原生的nativeModule名称，未设置则默认BridgeNativeModule
+     * @return
+     */
     protected abstract String getBridgeModuleName();
 
 }

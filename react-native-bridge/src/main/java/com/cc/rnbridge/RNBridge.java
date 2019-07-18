@@ -1,19 +1,19 @@
 package com.cc.rnbridge;
 
 import android.app.Application;
-import android.text.TextUtils;
 
-import com.facebook.infer.annotation.Assertions;
+import com.cc.rnbridge.entity.BundleConfig;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactInstanceManagerBuilder;
+import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.common.LifecycleState;
-import com.facebook.react.uimanager.UIImplementationProvider;
 
-import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author liujc
@@ -30,6 +30,10 @@ public class RNBridge {
     private Application mApplication;
     private boolean debug;
     private List<ReactPackage> reactPackages;
+    private BundleConfig mBundleConfig = new BundleConfig();
+    private static final Map<String,ReactNativeHost> nativeHostHashMap = new HashMap<>();
+
+    private static final Map<String,ReactInstanceManager> reactInstanceManagerHashMap = new HashMap<>();
 
     private RNBridge(){
 
@@ -52,7 +56,6 @@ public class RNBridge {
         this.mApplication = mApplication;
         this.debug = debug;
         this.reactPackages = reactPackages;
-//        SoLoader.init(mApplication, /* native exopackage */ false);
     }
 
     public Application getApplication() {
@@ -70,41 +73,16 @@ public class RNBridge {
         return reactPackages;
     }
 
-    public void setRootView(ReactRootView mReactRootView,
-                             String moduleName){
-        setRootView(mReactRootView, moduleName, null);
-    }
-
-    public void setRootView(ReactRootView mReactRootView,
-                            String moduleName,
-                            String bundleAssetName){
-        setRootView(mReactRootView, moduleName, bundleAssetName, null);
-    }
-
-    public void setRootView(ReactRootView mReactRootView,
-                            String moduleName,
-                            String bundleAssetName,
-                            String jsMainMoudlePath){
-        setRootView(getApplication(), mReactRootView, moduleName, bundleAssetName, jsMainMoudlePath, isDebug(), getReactPackages());
-    }
-    public void setRootView(ReactRootView mReactRootView,
-                            String moduleName,
-                            String bundleFilePath,
-                            String bundleAssetName,
-                            String jsMainMoudlePath){
-        setRootView(getApplication(), mReactRootView, moduleName,bundleFilePath, bundleAssetName, jsMainMoudlePath, isDebug(), getReactPackages());
-    }
-
-
-
-    public void setRootView(Application mApplication,
-                            ReactRootView mReactRootView,
-                            String moduleName,
-                            String bundleAssetName,
-                            String jsMainMoudlePath,
-                            boolean debug,
-                            List<ReactPackage> reactPackages){
-        setRootView(mApplication, mReactRootView, moduleName, null, bundleAssetName, jsMainMoudlePath, debug, reactPackages);
+    public void setRootView(ReactRootView mReactRootView, BundleConfig bundleConfig){
+        this.mBundleConfig = bundleConfig;
+        setRootView(getApplication(),
+                mReactRootView,
+                bundleConfig.getModuleName(),
+                bundleConfig.getBundleFile(),
+                bundleConfig.getBundleAssetName(),
+                bundleConfig.getJsMainMoudlePath(),
+                isDebug(),
+                getReactPackages());
     }
 
     public void setRootView(Application mApplication,
@@ -115,64 +93,62 @@ public class RNBridge {
                             String jsMainMoudlePath,
                             boolean debug,
                             List<ReactPackage> reactPackages){
-//        if (getReactInstanceManager() == null){
+        mReactInstanceManager = getReactInstanceManager(moduleName);
+        if (mReactInstanceManager == null){
             ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
                     .setApplication(mApplication)
                     .setUseDeveloperSupport(debug)
-                    .setJSMainModulePath(getJSMainModuleName(jsMainMoudlePath))
-                    .setUIImplementationProvider(getUIImplementationProvider())
+                    .setJSMainModulePath(jsMainMoudlePath)
                     .setInitialLifecycleState(LifecycleState.BEFORE_CREATE);
 
-            String jsBundleFile = getJSBundleFile(bundleFile);
-            if (jsBundleFile != null) {
-                builder.setJSBundleFile(jsBundleFile);
+            if (bundleFile != null) {
+                builder.setJSBundleFile(bundleFile);
             } else {
-                builder.setBundleAssetName(Assertions.assertNotNull(getBundleAssetName(bundleAssetName)));
+                builder.setBundleAssetName(bundleAssetName);
             }
             if (reactPackages != null && reactPackages.size() > 0){
                 builder.addPackages(reactPackages);
             }
             mReactInstanceManager = builder.build();
-//        }
+            reactInstanceManagerHashMap.put(moduleName, mReactInstanceManager);
+        }
         startReactApplication(mReactRootView, moduleName);
     }
 
     private void startReactApplication(ReactRootView mReactRootView, String moduleName){
         if (mReactRootView != null && mReactRootView.getReactInstanceManager() == null){
-            mReactRootView.startReactApplication(getReactInstanceManager(), moduleName, null);
+            mReactRootView.startReactApplication(getReactInstanceManager(moduleName), moduleName, null);
         }
-    }
-    private UIImplementationProvider getUIImplementationProvider() {
-        return new UIImplementationProvider();
     }
 
-    private String getBundleAssetName(String bundleAssetName) {
-        if (!TextUtils.isEmpty(bundleAssetName)){
-            return bundleAssetName;
-        }
-        return "index.android.bundle";
+    public ReactInstanceManager getReactInstanceManager(String moduleName){
+        return reactInstanceManagerHashMap.get(moduleName);
     }
 
-    private String getJSBundleFile(String bundleFile) {
-        if (TextUtils.isEmpty(bundleFile)){
-            return null;
-        }
-        File localBundleFile = new File(bundleFile);
-        if(localBundleFile.exists()){
-            return localBundleFile.getAbsolutePath();
-        }
-        return null;
-    }
+    private ReactNativeHost mReactNativeHost;
+    /**
+     * 计划另一种渲染方式，在Application中实现，不继承BaseReactActivity
+     * @param application
+     * @return
+     */
+    @Deprecated
+    public ReactNativeHost getReactNativeHost(Application application) {
+        mReactNativeHost = nativeHostHashMap.get(mBundleConfig.getModuleName());
+        if (mReactNativeHost == null){
+            mReactNativeHost = new ReactNativeHost(application) {
+                @Override
+                public boolean getUseDeveloperSupport() {
+                    return isDebug();
+                }
 
-    private String getJSMainModuleName(String jsMainMoudlePath) {
-        if (!TextUtils.isEmpty(jsMainMoudlePath)){
-            return jsMainMoudlePath;
+                @Override
+                protected List<ReactPackage> getPackages() {
+                    return getReactPackages();
+                }
+            };
+            nativeHostHashMap.put(mBundleConfig.getModuleName(), mReactNativeHost);
         }
-        return "index.android";
-    }
-
-    public ReactInstanceManager getReactInstanceManager(){
-        return mReactInstanceManager;
+        return mReactNativeHost;
     }
 
 }

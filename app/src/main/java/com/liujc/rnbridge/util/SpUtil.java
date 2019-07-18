@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.liujc.rnbridge.BuildConfig;
-import com.liujc.rnbridge.RNTest3Activity;
+import com.liujc.rnbridge.RNRemoteActivity;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -159,9 +159,9 @@ public class SpUtil {
     public static String getBundleVersion(Context context, Integer bundleId) {
         String bundleVersion = String.valueOf(get(context, String.valueOf(bundleId), ""));
         if (TextUtils.isEmpty(bundleVersion)){
-            if (bundleId == RNTest3Activity.KEY_BUNDLE_ONE){
+            if (bundleId == RNRemoteActivity.KEY_BUNDLE_ONE){
                 bundleVersion = BuildConfig.BUNDLE_ONE_VERSION;
-            }else if (bundleId == RNTest3Activity.KEY_BUNDLE_TWO){
+            }else if (bundleId == RNRemoteActivity.KEY_BUNDLE_TWO){
                 bundleVersion = BuildConfig.BUNDLE_TWO_VERSION;
             }
         }

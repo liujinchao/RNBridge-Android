@@ -3,146 +3,176 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingTop="20dp">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:id="@+id/toRNTestOne1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:text="跳转RNTestOne,版本V1.0.1更新可用"/>
-
-            <TextView
-                android:id="@+id/toRNTestOne2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:visibility="gone"
-                android:text="跳转RNTestOne,版本V1.0.2,当前最新版本可用"/>
-            <TextView
-                android:id="@+id/toRNTestOne3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:visibility="gone"
-                android:text="跳转RNTestOne,版本V1.0.3,最新版本未发布，无法使用"/>
-
-            <TextView
-                android:id="@+id/toRNTestTwo"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="跳转RNTestTwo有图片,版本V1.0.1更新可用"/>
-            <TextView
-                android:id="@+id/toRNTestTwo2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:text="跳转RNTestTwo有图片,版本V1.0.2,当前最新版本可用"/>
-            <TextView
-                android:id="@+id/toRNTestTwo3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:text="跳转RNTestTwo有图片,版本V1.0.3,最新版本未发布，无法使用"/>
-
-            <TextView
-                android:id="@+id/toRNTestThree"
-                android:layout_marginTop="10dp"
-                android:padding="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:text="跳转RNTestThree"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible">
-            <TextView
-                android:id="@+id/toRN"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="跳转RN-rn_test"/>
-
-            <TextView
-                android:id="@+id/toRN2"
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="跳转RN-rn_test有图片"/>
-
-            <TextView
-                android:id="@+id/toRNTest3"
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="跳转RN-rn_test3"/>
-
-            <TextView
-                android:id="@+id/loadRN"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="在当前页面加载RN"/>
-
-            <TextView
-                android:id="@+id/toRNSetting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="RN调试工具页"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible">
-            <TextView
-                android:id="@+id/sendmsg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="sendObject to RN"/>
-            <TextView
-                android:id="@+id/sendmap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="sendmap to RN"/>
-
-            <TextView
-                android:id="@+id/sendList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="sendlist to RN"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <com.facebook.react.ReactRootView
-        android:id="@+id/rrv_rn"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="以下是加载远程bundle"
+                        android:textColor="@color/colorPrimary"/>
+                    <TextView
+                        android:id="@+id/toRNTestOne1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="跳转RNTestOne,版本V1.0.1更新可用"/>
 
-    </com.facebook.react.ReactRootView>
+                    <TextView
+                        android:id="@+id/toRNTestOne2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"
+                        android:text="跳转RNTestOne,版本V1.0.2,当前最新版本可用"/>
+                    <TextView
+                        android:id="@+id/toRNTestOne3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"
+                        android:text="跳转RNTestOne,版本V1.0.3,最新版本未发布，无法使用"/>
+
+                    <TextView
+                        android:id="@+id/toRNTestTwo"
+                        android:padding="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="跳转RNTestTwo有图片,版本V1.0.1更新可用"/>
+                    <TextView
+                        android:id="@+id/toRNTestTwo2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="跳转RNTestTwo有图片,版本V1.0.2,当前最新版本可用"/>
+                    <TextView
+                        android:id="@+id/toRNTestTwo3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="跳转RNTestTwo有图片,版本V1.0.3,最新版本未发布，无法使用"/>
+
+                    <TextView
+                        android:id="@+id/toRNTestThree"
+                        android:layout_marginTop="10dp"
+                        android:padding="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:text="跳转RNTestThree"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="以下是加载本地bundle"
+                        android:textColor="@color/colorPrimary"/>
+                    <TextView
+                        android:id="@+id/toRN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="跳转RN-rn_test"/>
+
+                    <TextView
+                        android:id="@+id/toRN2"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="跳转RN-rn_test有图片"/>
+
+                    <TextView
+                        android:id="@+id/toRNTest3"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="跳转RN-rn_test3"/>
+
+                    <TextView
+                        android:id="@+id/loadRN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="在当前页面加载RN rn_test"/>
+
+                    <TextView
+                        android:id="@+id/toRNSetting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="RN调试工具页"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="以下native给RN发消息"
+                        android:textColor="@color/colorPrimary"/>
+                    <TextView
+                        android:id="@+id/sendmsg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="sendObject to RN"/>
+                    <TextView
+                        android:id="@+id/sendmap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="sendmap to RN"/>
+
+                    <TextView
+                        android:id="@+id/sendList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="sendlist to RN"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.facebook.react.ReactRootView
+                android:id="@+id/rrv_rn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </com.facebook.react.ReactRootView>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

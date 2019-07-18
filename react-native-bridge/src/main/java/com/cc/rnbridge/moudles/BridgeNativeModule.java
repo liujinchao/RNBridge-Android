@@ -1,4 +1,4 @@
-package com.cc.rnbridge.base;
+package com.cc.rnbridge.moudles;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,9 +7,10 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.cc.rnbridge.base.BaseNativeMethod;
 import com.cc.rnbridge.entity.Event;
+import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.ActivityEventListener;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -20,21 +21,27 @@ import javax.annotation.Nonnull;
 
 /**
  * @author liujc
- * @ClassName BaseNativeModule
+ * @ClassName BridgeNativeModule
  * @date 2019/7/10
  * @Description Android原生预留给RN的调用方法
  */
-public class BaseNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener {
+final class BridgeNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener {
+
+    public static final String DEFAULT_MODULE_NAME = "BridgeNativeModule";
 
     private BaseNativeMethod baseReactMethod;
 
     private String mNativeModuleName;
 
-    public BaseNativeModule(@Nonnull ReactApplicationContext reactContext,
-                            @Nonnull BaseNativeMethod reactMethod,
-                            @Nonnull String nativeModuleName) {
+    public BridgeNativeModule(@Nonnull ReactApplicationContext reactContext,
+                              @Nonnull BaseNativeMethod reactMethod,
+                              @Nonnull String nativeModuleName) {
         super(reactContext);
         this.baseReactMethod = reactMethod;
+        Assertions.assertNotNull(baseReactMethod, "还没有实现BaseNativeMethod");
+        if (!TextUtils.isEmpty(nativeModuleName)) {
+            nativeModuleName = DEFAULT_MODULE_NAME;
+        }
         this.mNativeModuleName = nativeModuleName;
     }
 
@@ -54,9 +61,9 @@ public class BaseNativeModule extends ReactContextBaseJavaModule implements Acti
     }
 
     @ReactMethod
-    public void startActivityForResult(String targetPath, Callback success, Callback error) {
+    public void startActivityForResult(String targetPath, Promise promise) {
         Activity mActivity = getCurrentActivity();
-        baseReactMethod.startActivityForResult(mActivity, targetPath, success, error);
+        baseReactMethod.startActivityForResult(mActivity, targetPath, promise);
     }
 
     @Override

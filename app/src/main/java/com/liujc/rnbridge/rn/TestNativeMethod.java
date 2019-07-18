@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import com.cc.rnbridge.base.BaseNativeMethod;
 import com.cc.rnbridge.entity.Event;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 
 /**
@@ -17,7 +16,7 @@ import com.facebook.react.bridge.Promise;
 public class TestNativeMethod implements BaseNativeMethod {
 
     @Override
-    public void startActivityForResult(Activity mActivity, String targetPath, Callback success, Callback error) {
+    public void startActivityForResult(Activity mActivity, String targetPath, Promise promise) {
 
     }
 

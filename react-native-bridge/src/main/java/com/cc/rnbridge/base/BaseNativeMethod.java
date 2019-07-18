@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.cc.rnbridge.entity.Event;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 
 /**
@@ -15,7 +14,7 @@ import com.facebook.react.bridge.Promise;
  */
 public interface BaseNativeMethod {
 
-    void startActivityForResult(Activity mActivity, String targetPath, Callback success, Callback error);
+    void startActivityForResult(Activity mActivity, String targetPath, Promise promise);
 
     void onActivityResult(Activity mActivity, int requestCode, int resultCode, Intent data);
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.cc.rnbridge.RNBridge;
+import com.cc.rnbridge.entity.BundleConfig;
 import com.facebook.react.ReactRootView;
 
 /**
@@ -18,12 +19,18 @@ public class RN2Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rn2_layout);
+        mReactRootView = new ReactRootView(this);
+        setContentView(mReactRootView);
+//        setContentView(R.layout.activity_rn2_layout);
         initView();
     }
 
     private void initView() {
-        mReactRootView = findViewById(R.id.rrv_rn);
-        RNBridge.getInstance().setRootView(mReactRootView, "rnTest2","index.androidimg.bundle");
+//        mReactRootView = findViewById(R.id.rrv_rn);
+        RNBridge.getInstance().setRootView(mReactRootView,
+                new BundleConfig.BundleConfigBuild()
+                        .setModuleName("rnTest2")
+                        .setBundleAssetName("index.androidimg.bundle")
+                        .build());
     }
 }

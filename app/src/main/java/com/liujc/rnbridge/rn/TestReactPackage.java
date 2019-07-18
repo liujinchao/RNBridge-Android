@@ -1,7 +1,7 @@
 package com.liujc.rnbridge.rn;
 
 import com.cc.rnbridge.base.BaseNativeMethod;
-import com.cc.rnbridge.base.BaseReactPackage;
+import com.cc.rnbridge.moudles.BaseReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
