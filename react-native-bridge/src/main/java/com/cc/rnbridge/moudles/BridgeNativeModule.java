@@ -39,7 +39,7 @@ final class BridgeNativeModule extends ReactContextBaseJavaModule implements Act
         super(reactContext);
         this.baseReactMethod = reactMethod;
         Assertions.assertNotNull(baseReactMethod, "还没有实现BaseNativeMethod");
-        if (!TextUtils.isEmpty(nativeModuleName)) {
+        if (TextUtils.isEmpty(nativeModuleName)) {
             nativeModuleName = DEFAULT_MODULE_NAME;
         }
         this.mNativeModuleName = nativeModuleName;

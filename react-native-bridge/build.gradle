@@ -9,6 +9,11 @@ android {
         versionCode 1
         versionName "1.0"
 
+        manifestPlaceholders = [
+                APP_SCHEME :  "rnbridge", //app  scheme协议
+                APP_HOST :  "app.native.com", //app  host协议
+        ]
+
     }
 
     buildTypes {

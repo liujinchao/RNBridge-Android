@@ -1,19 +1,23 @@
 package com.cc.rnbridge;
 
 import android.app.Application;
+import android.os.Bundle;
+import android.util.SparseArray;
 
+import com.cc.rnbridge.base.ReactBridgeActivity;
 import com.cc.rnbridge.entity.BundleConfig;
+import com.cc.rnbridge.impl.BridgeConfig;
+import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactInstanceManagerBuilder;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.common.LifecycleState;
+import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author liujc
@@ -31,9 +35,13 @@ public class RNBridge {
     private boolean debug;
     private List<ReactPackage> reactPackages;
     private BundleConfig mBundleConfig = new BundleConfig();
-    private static final Map<String,ReactNativeHost> nativeHostHashMap = new HashMap<>();
 
-    private static final Map<String,ReactInstanceManager> reactInstanceManagerHashMap = new HashMap<>();
+    private static final SparseArray<ReactNativeHost> nativeHostArray = new SparseArray();
+
+    /**
+     * 暂时意义不大，为了下载的bundle及时生效，没有从缓存中读取ReactInstanceManager
+     */
+    private static final SparseArray<ReactInstanceManager> reactInstanceManagerArray = new SparseArray();
 
     private RNBridge(){
 
@@ -50,12 +58,11 @@ public class RNBridge {
         return defaultInstance;
     }
 
-    public void initRNConfig(Application mApplication,
-                             boolean debug,
-                             List<ReactPackage> reactPackages){
+    public RNBridge initRNConfig(Application mApplication, BridgeConfig bridgeConfig){
         this.mApplication = mApplication;
-        this.debug = debug;
-        this.reactPackages = reactPackages;
+        this.debug = bridgeConfig.isDebug();
+        this.reactPackages = bridgeConfig.getReactPackages();
+        return this;
     }
 
     public Application getApplication() {
@@ -74,66 +81,109 @@ public class RNBridge {
     }
 
     public void setRootView(ReactRootView mReactRootView, BundleConfig bundleConfig){
+        Assertions.assumeNotNull(getApplication(), "还没有初始化RNBridge");
         this.mBundleConfig = bundleConfig;
         setRootView(getApplication(),
+                null,
+                null,
                 mReactRootView,
+                bundleConfig.getBundleId(),
                 bundleConfig.getModuleName(),
-                bundleConfig.getBundleFile(),
+                bundleConfig.getBundleFilePath(),
                 bundleConfig.getBundleAssetName(),
                 bundleConfig.getJsMainMoudlePath(),
+                bundleConfig.getAppProperties(),
                 isDebug(),
                 getReactPackages());
     }
 
-    public void setRootView(Application mApplication,
+    /**
+     * 前两个字段计划延迟加载bundle文件时绑定Activity与RN生命周期
+     * @param mActivity
+     * @param defaultHardwareBackBtnHandler
+     * @param mReactRootView
+     * @param bundleConfig
+     */
+    @Deprecated
+    public void setRootView(ReactBridgeActivity mActivity,
+                            DefaultHardwareBackBtnHandler defaultHardwareBackBtnHandler,
                             ReactRootView mReactRootView,
-                            String moduleName,
-                            String bundleFile,
-                            String bundleAssetName,
-                            String jsMainMoudlePath,
-                            boolean debug,
-                            List<ReactPackage> reactPackages){
-        mReactInstanceManager = getReactInstanceManager(moduleName);
-        if (mReactInstanceManager == null){
-            ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
-                    .setApplication(mApplication)
-                    .setUseDeveloperSupport(debug)
-                    .setJSMainModulePath(jsMainMoudlePath)
-                    .setInitialLifecycleState(LifecycleState.BEFORE_CREATE);
-
-            if (bundleFile != null) {
-                builder.setJSBundleFile(bundleFile);
-            } else {
-                builder.setBundleAssetName(bundleAssetName);
-            }
-            if (reactPackages != null && reactPackages.size() > 0){
-                builder.addPackages(reactPackages);
-            }
-            mReactInstanceManager = builder.build();
-            reactInstanceManagerHashMap.put(moduleName, mReactInstanceManager);
-        }
-        startReactApplication(mReactRootView, moduleName);
+                            BundleConfig bundleConfig){
+        Assertions.assumeNotNull(getApplication(), "还没有初始化RNBridge");
+        this.mBundleConfig = bundleConfig;
+        setRootView(getApplication(),
+                mActivity,
+                defaultHardwareBackBtnHandler,
+                mReactRootView,
+                bundleConfig.getBundleId(),
+                bundleConfig.getModuleName(),
+                bundleConfig.getBundleFilePath(),
+                bundleConfig.getBundleAssetName(),
+                bundleConfig.getJsMainMoudlePath(),
+                bundleConfig.getAppProperties(),
+                isDebug(),
+                getReactPackages());
     }
 
-    private void startReactApplication(ReactRootView mReactRootView, String moduleName){
+    private void setRootView(Application mApplication,
+                             ReactBridgeActivity mActivity,
+                             DefaultHardwareBackBtnHandler defaultHardwareBackBtnHandler,
+                             ReactRootView mReactRootView,
+                             int bundleId,
+                             String moduleName,
+                             String bundleFile,
+                             String bundleAssetName,
+                             String jsMainMoudlePath,
+                             Bundle appProperties,
+                             boolean debug,
+                             List<ReactPackage> reactPackages){
+
+        /*为了下载的bundle及时生效，参数重新组装*/
+        ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
+                .setApplication(mApplication)
+                .setUseDeveloperSupport(debug)
+                .setJSMainModulePath(jsMainMoudlePath)
+                .setInitialLifecycleState(LifecycleState.BEFORE_CREATE);
+
+        if (bundleFile != null) {
+            builder.setJSBundleFile(bundleFile);
+        } else {
+            builder.setBundleAssetName(bundleAssetName);
+        }
+        if (reactPackages != null && reactPackages.size() > 0){
+            builder.addPackages(reactPackages);
+        }
+        mReactInstanceManager = builder.build();
+        if (mActivity != null){
+            if (defaultHardwareBackBtnHandler != null){
+                mReactInstanceManager.onHostResume(mActivity, defaultHardwareBackBtnHandler);
+            }else {
+                mReactInstanceManager.onHostResume(mActivity);
+            }
+        }
+        reactInstanceManagerArray.put(bundleId, mReactInstanceManager);
+        startReactApplication(mReactRootView, moduleName,appProperties);
+    }
+
+    private void startReactApplication(ReactRootView mReactRootView, String moduleName,Bundle appProperties){
         if (mReactRootView != null && mReactRootView.getReactInstanceManager() == null){
-            mReactRootView.startReactApplication(getReactInstanceManager(moduleName), moduleName, null);
+            mReactRootView.startReactApplication(mReactInstanceManager, moduleName, appProperties);
         }
     }
 
-    public ReactInstanceManager getReactInstanceManager(String moduleName){
-        return reactInstanceManagerHashMap.get(moduleName);
+    public ReactInstanceManager getReactInstanceManager(int bundleId){
+        return reactInstanceManagerArray.get(bundleId);
     }
 
     private ReactNativeHost mReactNativeHost;
     /**
-     * 计划另一种渲染方式，在Application中实现，不继承BaseReactActivity
+     * 计划另一种渲染方式，在Application中实现，继承ReactActivity场景使用
      * @param application
      * @return
      */
     @Deprecated
     public ReactNativeHost getReactNativeHost(Application application) {
-        mReactNativeHost = nativeHostHashMap.get(mBundleConfig.getModuleName());
+        mReactNativeHost = nativeHostArray.get(mBundleConfig.getBundleId());
         if (mReactNativeHost == null){
             mReactNativeHost = new ReactNativeHost(application) {
                 @Override
@@ -146,7 +196,7 @@ public class RNBridge {
                     return getReactPackages();
                 }
             };
-            nativeHostHashMap.put(mBundleConfig.getModuleName(), mReactNativeHost);
+            nativeHostArray.put(mBundleConfig.getBundleId(), mReactNativeHost);
         }
         return mReactNativeHost;
     }
