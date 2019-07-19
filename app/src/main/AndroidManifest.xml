@@ -22,9 +22,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RNActivity"/>
-        <activity android:name=".RN2Activity"/>
-        <activity android:name=".RNRemoteActivity"/>
+
+        <activity android:name=".RNRemoteActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="test2"
+                    android:host="app.liujc.com" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
     </application>

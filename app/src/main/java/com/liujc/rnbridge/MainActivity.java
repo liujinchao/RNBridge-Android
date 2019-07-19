@@ -10,10 +10,8 @@ import com.cc.rnbridge.RNBridge;
 import com.cc.rnbridge.entity.BundleConfig;
 import com.cc.rnbridge.entity.Event;
 import com.cc.rnbridge.util.RNEventEmitter;
-import com.cc.rnbridge.util.RNMapUtil;
 import com.facebook.react.ReactRootView;
 import com.liujc.rnbridge.rn.TestEvent;
-import com.liujc.rnbridge.util.SpUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,57 +40,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTestRemoteBundle() {
-        TextView toRNTestOne = findViewById(R.id.toRNTestOne1);
-        toRNTestOne.setOnClickListener(v -> {
-            SpUtil.setBundleVersion(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_ONE, "1.0.1");
-            RNRemoteActivity.startActivity(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_ONE,"1.0.1");
-        });
-        TextView toRNTestOne2 = findViewById(R.id.toRNTestOne2);
-        toRNTestOne2.setOnClickListener(v -> {
-            SpUtil.setBundleVersion(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_ONE, "1.0.2");
-            RNRemoteActivity.startActivity(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_ONE,"1.0.2");
-        });
-        TextView toRNTestOne3 = findViewById(R.id.toRNTestOne3);
-        toRNTestOne3.setOnClickListener(v -> {
-            SpUtil.setBundleVersion(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_ONE, "1.0.3");
-            RNRemoteActivity.startActivity(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_ONE,"1.0.3");
-        });
-        TextView toRNTestTwo = findViewById(R.id.toRNTestTwo);
-        toRNTestTwo.setOnClickListener(v -> {
-            RNRemoteActivity.startActivity(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_TWO, BuildConfig.BUNDLE_TWO_VERSION);
-        });
-        TextView toRNTestTwo2 = findViewById(R.id.toRNTestTwo2);
-        toRNTestTwo2.setOnClickListener(v -> {
-            SpUtil.setBundleVersion(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_TWO, "1.0.2");
-            RNRemoteActivity.startActivity(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_TWO,"1.0.2");
-        });
-        TextView toRNTestTwo3 = findViewById(R.id.toRNTestTwo3);
-        toRNTestTwo3.setOnClickListener(v -> {
-            SpUtil.setBundleVersion(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_TWO, "1.0.3");
-            RNRemoteActivity.startActivity(MainActivity.this, RNRemoteActivity.KEY_BUNDLE_TWO,"1.0.3");
-        });
-        TextView toRNTestThree = findViewById(R.id.toRNTestThree);
-        toRNTestThree.setOnClickListener(v -> {
-            RNRemoteActivity.startActivity(MainActivity.this);
+        TextView toLoadRemoteBundleTest = findViewById(R.id.toLoadRemoteBundleTest);
+        toLoadRemoteBundleTest.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, RNRemoteActivity.class));
         });
     }
 
     private void initData() {
         toRN = findViewById(R.id.toRN);
-        toRN.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RNActivity.class)));
+        toRN.setOnClickListener(v -> {
+            RNRemoteActivity.loadLocalBundleTestOne(MainActivity.this);
+        });
 
         toRN2 = findViewById(R.id.toRN2);
-        toRN2.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RN2Activity.class)));
+        toRN2.setOnClickListener(v -> {
+            RNRemoteActivity.loadLocalBundleTestTwo(MainActivity.this);
+        });
 
         toRNTest3 = findViewById(R.id.toRNTest3);
-        toRNTest3.setOnClickListener(v -> RNRemoteActivity.startActivity(MainActivity.this));
+        toRNTest3.setOnClickListener(v -> {
+            RNRemoteActivity.loadRNTest3(MainActivity.this);
+        });
 
         toRNSetting = findViewById(R.id.toRNSetting);
         toRNSetting.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, com.facebook.react.devsupport.DevSettingsActivity.class)));
 
         loadRN = findViewById(R.id.loadRN);
         loadRN.setOnClickListener(v -> {
-            RNBridge.getInstance().setRootView(mReactRootView, new BundleConfig.BundleConfigBuild().setModuleName("rn_test").build());
+            RNBridge.getInstance().setRootView(mReactRootView, new BundleConfig.BundleConfigBuild().setBundleId(1006).setModuleName("rnTest3").build());
         });
 
         sendMsgToRN = findViewById(R.id.sendmsg);
@@ -102,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
                 TestEvent testEvent = new TestEvent();
                 testEvent.setName("小龙女");
                 testEvent.setAge(18);
-                RNEventEmitter.sendEvent(RNEventEmitter.DEFAULT_EVENT_NAME, RNMapUtil.toWritableMap(testEvent));
+//                RNEventEmitter.sendEvent(RNEventEmitter.DEFAULT_EVENT_NAME, RNMapUtil.toWritableMap(testEvent));
 
                 Event<TestEvent> eventEvent = new Event<>();
                 eventEvent.setCode(200);
-                eventEvent.setMsg("native send 对象(beautiful girl) to RN2Activity");
+                eventEvent.setMsg("native send 对象(beautiful girl) to RNActivity");
                 eventEvent.setData(testEvent);
                 RNEventEmitter.sendEvent(eventEvent);
             }
@@ -116,11 +91,11 @@ public class MainActivity extends AppCompatActivity {
             List<String> list = new ArrayList<>();
             list.add("a");
             list.add("b");
-            RNEventEmitter.sendEvent(RNEventEmitter.DEFAULT_EVENT_NAME,list.toArray());
+//            RNEventEmitter.sendEvent(RNEventEmitter.DEFAULT_EVENT_NAME,list.toArray());
 
             Event<List> eventEvent = new Event<>();
             eventEvent.setCode(200);
-            eventEvent.setMsg("native send list to RN2Activity");
+            eventEvent.setMsg("native send list to RNActivity");
             eventEvent.setData(list);
             RNEventEmitter.sendEvent(eventEvent);
 
@@ -130,16 +105,15 @@ public class MainActivity extends AppCompatActivity {
         sendMapToRN.setOnClickListener(v -> {
             Map<String, Object> map = new HashMap<>();
             map.put("map","this is map");
-            RNEventEmitter.sendEvent(RNEventEmitter.DEFAULT_EVENT_NAME,map);
+//            RNEventEmitter.sendEvent(RNEventEmitter.DEFAULT_EVENT_NAME,map);
 
             Event<Map> eventEvent = new Event<>();
             eventEvent.setCode(200);
-            eventEvent.setMsg("native send map to RN2Activity");
+            eventEvent.setMsg("native send map to RNActivity");
             eventEvent.setData(map);
             RNEventEmitter.sendEvent(eventEvent);
         });
 
-//        RNBridge.getInstance().setRootView(mReactRootView, "rn_test");
     }
 
     private void initView() {

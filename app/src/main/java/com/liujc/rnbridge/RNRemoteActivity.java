@@ -2,16 +2,16 @@ package com.liujc.rnbridge;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cc.rnbridge.RNBridge;
+import com.cc.rnbridge.base.ReactBridgeActivity;
 import com.cc.rnbridge.entity.BundleConfig;
 import com.cc.rnbridge.util.RNBundleUtil;
-import com.facebook.react.ReactRootView;
 import com.liujc.rnbridge.util.BundleVersionInfo;
 import com.liujc.rnbridge.util.net.CommonService;
 import com.liujc.rnbridge.util.net.NetHelper;
@@ -21,121 +21,155 @@ import java.io.File;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.cc.rnbridge.base.ReactBridgeActivity.openRnUrl;
+
 /**
  * @author liujc
- * @ClassName RN2Activity
+ * @ClassName RNRemoteActivity
  * @date 2019/7/13
- * @Description (这里用一句话描述这个类的作用)
+ * @Description 测试加载远程bundle
  */
 public class RNRemoteActivity extends AppCompatActivity {
-    private ReactRootView mReactRootView;
-
-    public static final String KEY_BUNDLE_ID = "bundleId";
-    public static final String KEY_BUNDLE_VERSION = "bundleVersion";
-    public static final String KEY_MODULE_NAME = "moduleName";
-    public static final String KEY_BUNDLE_ASSET_NAME = "bundleAssetName";
-    public static final String KEY_JSMAIN_MOUDLE_PATH = "jsMainMoudlePath";
 
     public static final int KEY_BUNDLE_ONE = 1001;
     public static final int KEY_BUNDLE_TWO = 1002;
 
-
-    private Integer bundleId;
-    private String moduleName;
-    private String bundleFilePath;
-    private String bundleAssetName;
-    private String jsMainMoudlePath;
-    private String currentBundleVersion;
-
-    public static void startActivity(Context context){
-        startActivity(context,1003,BuildConfig.BUNDLE_THREE_VERSION,"rnTest3","rnTestThree.bundle", "rnTestThree");
+    /**
+     * 测试加载assets中的bundle文件 start
+     */
+    public static void loadRNTest3(Context context){
+        loadLocalBundle(context, 1003,"rnTest3", null, null );
     }
 
-    public static void startActivity(Context context, Integer bundleId, String bundleVersion){
-        if (bundleId == KEY_BUNDLE_ONE){
-            startActivity(context, bundleId,
-                    bundleVersion,
-                    "rnTest1",
-                    "rnbundleone.bundle",
-                    "rnTestOne");
-        }else if (bundleId == KEY_BUNDLE_TWO){
-            startActivity(context, bundleId,
-                    bundleVersion,
-                    "rnTest2",
-                    "rnbundletwo.bundle",
-                    "rnTestTwo" );
-        }
-
+    public static void loadLocalBundleTestOne(Context context){
+        loadLocalBundle(context, 1004,"rnTest1", "rnbundleone.bundle", null);
+    }
+    public static void loadLocalBundleTestTwo(Context context){
+        loadLocalBundle(context, 1005,"rnTest2", "rnbundletwo.bundle", null);
     }
 
-    public static void startActivity(Context context,
-                                     Integer bundleId,
-                                     String bundleVersion,
-                                     String moduleName,
-                                     String bundleAssetName,
-                                     String jsMainMoudlePath){
-        Intent intent = new Intent(context, RNRemoteActivity.class);
-        intent.putExtra(KEY_BUNDLE_ID, bundleId);
-        intent.putExtra(KEY_BUNDLE_VERSION, bundleVersion);
-        intent.putExtra(KEY_MODULE_NAME, moduleName);
-        intent.putExtra(KEY_BUNDLE_ASSET_NAME, bundleAssetName);
-        intent.putExtra(KEY_JSMAIN_MOUDLE_PATH, jsMainMoudlePath);
-        context.startActivity(intent);
+    public static void loadLocalBundle(Context context,
+                                       Integer bundleId,
+                                       String moduleName,
+                                       String bundleAssetName,
+                                       String jsMainMoudlePat){
+        Bundle bundle = new Bundle();
+        bundle.putString("test", moduleName + "  " + bundleAssetName + "  " + jsMainMoudlePat);
+        BundleConfig bundleConfig = new BundleConfig.BundleConfigBuild()
+                .setBundleId(bundleId)
+                .setModuleName(moduleName)
+                .setBundleAssetName(bundleAssetName)
+                .setJsMainMoudlePath(jsMainMoudlePat)
+                .setAppProperties(bundle)
+                .build();
+        openRnUrl(context, ReactBridgeActivity.DEFAULT_RN_HOST,bundleConfig);
     }
+    /**
+     * 测试加载assets中的bundle文件 end
+     */
+
+    public static void loadRemote(Context context){
+        Bundle bundle = new Bundle();
+        bundle.putString("test", "RNRemoteActivity");
+        BundleConfig bundleConfig = new BundleConfig.BundleConfigBuild()
+                .setModuleName("rnTest3")
+                .setAppProperties(bundle)
+                .build();
+        openRnUrl(context, ReactBridgeActivity.DEFAULT_RN_HOST ,bundleConfig);
+    }
+
+    private BundleConfig mBundleConfig;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rn3_layout);
-        initIntentData();
-        initView();
+        setContentView(R.layout.activity_remote_bundle_layout);
+        initTestRemoteBundle();
+    }
+    private void initTestRemoteBundle() {
+        TextView toRNTestOne = findViewById(R.id.toRNTestOne1);
+        toRNTestOne.setOnClickListener(v -> {
+            mBundleConfig  = loadRemoteBundle(KEY_BUNDLE_ONE,"1.0.1");
+            if (mBundleConfig != null){
+               updateJsBundle();
+            }
+        });
+
+        TextView toRNTestTwo = findViewById(R.id.toRNTestTwo);
+        toRNTestTwo.setOnClickListener(v -> {
+            mBundleConfig = loadRemoteBundle(KEY_BUNDLE_TWO, BuildConfig.BUNDLE_TWO_VERSION);
+            if (mBundleConfig != null){
+                updateJsBundle();
+            }
+        });
+
+        TextView toRNTestTwo2 = findViewById(R.id.toRNTestTwo2);
+        toRNTestTwo2.setOnClickListener(v -> {
+            mBundleConfig = loadRemoteBundle(KEY_BUNDLE_TWO,"1.0.2");
+            if (mBundleConfig != null){
+                updateJsBundle();
+            }
+        });
+        TextView toRNTestTwo3 = findViewById(R.id.toRNTestTwo3);
+        toRNTestTwo3.setOnClickListener(v -> {
+            mBundleConfig = loadRemoteBundle(KEY_BUNDLE_TWO,"1.0.3");
+            if (mBundleConfig != null){
+                updateJsBundle();
+            }
+        });
+
     }
 
-    private void initIntentData() {
-        bundleId = getIntent().getIntExtra(KEY_BUNDLE_ID, 0);
-        currentBundleVersion = getIntent().getStringExtra(KEY_BUNDLE_VERSION);
-        moduleName = getIntent().getStringExtra(KEY_MODULE_NAME);
-        bundleAssetName = getIntent().getStringExtra(KEY_BUNDLE_ASSET_NAME);
-        jsMainMoudlePath = getIntent().getStringExtra(KEY_JSMAIN_MOUDLE_PATH);
-        bundleFilePath = getIntent().getStringExtra(KEY_JSMAIN_MOUDLE_PATH);
-    }
-
-    private void initView() {
-        mReactRootView = findViewById(R.id.rrv_rn);
-//        RNBridge.getInstance().setRootView(mReactRootView, "rnTest3","index.androidtestT.bundle");
-//        RNBridge.getInstance().setRootView(mReactRootView, "rnTest3","rnTestThree.bundle","rnTestThree");
-
-//        loadBundle();
-        updateJsBundle();
-//        testLocalUpdate();
-    }
-
-    private void loadBundle(){
-        File bundleFile = new File(getExternalCacheDir()+"/finalbundle/finalbundle","rnTestThree.bundle");
-        String bundlePath = null;
-        if(bundleFile.exists()){
-            bundlePath = bundleFile.getAbsolutePath();
+    /**
+     * 模拟加载两个bundle，然后进行版本检查
+     * @param bundleId
+     * @param bundleVersion
+     * @return
+     */
+    public BundleConfig loadRemoteBundle(Integer bundleId, String bundleVersion){
+        Bundle bundle = new Bundle();
+        bundle.putInt("bundleId",bundleId);
+        bundle.putString("bundleVersion", bundleVersion);
+        if (bundleId == KEY_BUNDLE_ONE){
+            BundleConfig bundleConfig = new BundleConfig.BundleConfigBuild()
+                    .setBundleId(bundleId)
+                    .setBundleVersion(bundleVersion)
+                    .setModuleName("rnTest1")
+                    .setBundleAssetName("rnbundleone.bundle")
+                    .setJsMainMoudlePath("rnTestOne")
+                    .setAppProperties(bundle)
+                    .build();
+            return bundleConfig;
+        }else if (bundleId == KEY_BUNDLE_TWO){
+            BundleConfig bundleConfig = new BundleConfig.BundleConfigBuild()
+                    .setBundleId(bundleId)
+                    .setBundleVersion(bundleVersion)
+                    .setModuleName("rnTest2")
+                    .setBundleAssetName("rnbundletwo.bundle")
+                    .setJsMainMoudlePath("rnTestTwo")
+                    .setAppProperties(bundle)
+                    .build();
+            return bundleConfig;
         }
-        RNBridge.getInstance().setRootView(mReactRootView,
-                new BundleConfig.BundleConfigBuild()
-                        .setModuleName("rnTest3")
-                        .setBundlePath(bundlePath)
-                        .setBundleAssetName("rnTestThree.bundle")
-                        .setJsMainMoudlePath("rnTestThree")
-                        .build());
+        return null;
     }
 
     private void updateJsBundle(){
-//        String currentBundleVersion = SpUtil.getBundleVersion(RNRemoteActivity.this, bundleId);
         if (!RNBundleUtil.checkPermission(RNRemoteActivity.this, new String[]{
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1001)){
             return;
         }
-//            testLocalUpdate();
+//        testLocalUpdate();
+        mockBundleUpdate();
+    }
 
+    /**
+     * 本地模拟jsbundle的版本检查操作（本地服务，可能此路不同）
+     */
+    private void mockBundleUpdate() {
         NetHelper.getApiService(CommonService.class)
-                .checkBundleVersion(bundleId, BuildConfig.VERSION_NAME, "1.0", currentBundleVersion)
+                .checkBundleVersion(mBundleConfig.getBundleId(), BuildConfig.VERSION_NAME, "1.0", mBundleConfig.getBundleVersion())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseEntity -> {
@@ -150,7 +184,7 @@ public class RNRemoteActivity extends AppCompatActivity {
                             }
                         }else if (bundleInfo.isCanUse()){
                             showMsg("当前已是最新版本");
-                            loadBundle(getExternalCacheDir()+"/finalbundle/"+getBundleFileName(bundleId));
+                            loadBundle(getExternalCacheDir()+"/finalbundle/"+getBundleFileName(mBundleConfig.getBundleId()));
                         }else {
                             showMsg("新功能正在开发中，敬请期待");
                         }
@@ -158,11 +192,14 @@ public class RNRemoteActivity extends AppCompatActivity {
                 }, throwable -> showMsg(throwable.getLocalizedMessage()));
     }
 
+    /**
+     * 不走版本检查接口，直接根据链接下载然后加载
+     */
     private void testLocalUpdate() {
         String url = "http://10.181.12.38:8081/qrcode/upload/api/rnTestThreebundle.zip";
-        if (bundleId == KEY_BUNDLE_ONE){
+        if (mBundleConfig.getBundleId() == KEY_BUNDLE_ONE){
             url = "http://10.181.12.38:8081/qrcode/upload/api/rnbundleone.zip";
-        }else if (bundleId == KEY_BUNDLE_TWO){
+        }else if (mBundleConfig.getBundleId() == KEY_BUNDLE_TWO){
             url = "http://10.181.12.38:8081/qrcode/upload/api/rnbundletwo.zip";
         }
         downLoadBundle(url);
@@ -187,18 +224,13 @@ public class RNRemoteActivity extends AppCompatActivity {
     }
 
     private void loadBundle(String path){
-        File bundleFile = new File(path,bundleAssetName);
+        File bundleFile = new File(path,mBundleConfig.getBundleAssetName());
         String bundlePath = null;
         if(bundleFile.exists()){
             bundlePath = bundleFile.getAbsolutePath();
         }
-        RNBridge.getInstance().setRootView(mReactRootView,
-                new BundleConfig.BundleConfigBuild()
-                        .setModuleName(moduleName)
-                        .setBundlePath(bundlePath)
-                        .setBundleAssetName(bundleAssetName)
-                        .setJsMainMoudlePath(jsMainMoudlePath)
-                        .build());
+        mBundleConfig.setBundleFilePath(bundlePath);
+        openRnUrl(RNRemoteActivity.this, ReactBridgeActivity.DEFAULT_RN_HOST ,mBundleConfig);
     }
 
     @Override
@@ -208,5 +240,4 @@ public class RNRemoteActivity extends AppCompatActivity {
             updateJsBundle();
         }
     }
-
 }

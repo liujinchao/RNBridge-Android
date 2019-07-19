@@ -29,60 +29,12 @@
                         android:text="以下是加载远程bundle"
                         android:textColor="@color/colorPrimary"/>
                     <TextView
-                        android:id="@+id/toRNTestOne1"
+                        android:id="@+id/toLoadRemoteBundleTest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
                         android:layout_marginTop="10dp"
-                        android:text="跳转RNTestOne,版本V1.0.1更新可用"/>
-
-                    <TextView
-                        android:id="@+id/toRNTestOne2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:layout_marginTop="10dp"
-                        android:visibility="gone"
-                        android:text="跳转RNTestOne,版本V1.0.2,当前最新版本可用"/>
-                    <TextView
-                        android:id="@+id/toRNTestOne3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:layout_marginTop="10dp"
-                        android:visibility="gone"
-                        android:text="跳转RNTestOne,版本V1.0.3,最新版本未发布，无法使用"/>
-
-                    <TextView
-                        android:id="@+id/toRNTestTwo"
-                        android:padding="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="跳转RNTestTwo有图片,版本V1.0.1更新可用"/>
-                    <TextView
-                        android:id="@+id/toRNTestTwo2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="跳转RNTestTwo有图片,版本V1.0.2,当前最新版本可用"/>
-                    <TextView
-                        android:id="@+id/toRNTestTwo3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="跳转RNTestTwo有图片,版本V1.0.3,最新版本未发布，无法使用"/>
-
-                    <TextView
-                        android:id="@+id/toRNTestThree"
-                        android:layout_marginTop="10dp"
-                        android:padding="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:text="跳转RNTestThree"/>
+                        android:text="加载远程bundle测试模块"/>
 
                 </LinearLayout>
 
@@ -90,6 +42,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
                     android:visibility="visible">
                     <TextView
                         android:layout_width="match_parent"
@@ -102,14 +56,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="跳转RN-rn_test"/>
+                        android:text="跳转RN-Test-One"/>
 
                     <TextView
                         android:id="@+id/toRN2"
                         android:layout_marginTop="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="跳转RN-rn_test有图片"/>
+                        android:text="跳转RN-Test-Two"/>
 
                     <TextView
                         android:id="@+id/toRNTest3"
@@ -123,7 +77,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="在当前页面加载RN rn_test"/>
+                        android:text="在当前页面加载RN-index-rnTest3"/>
 
                     <TextView
                         android:id="@+id/toRNSetting"

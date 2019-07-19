@@ -11,7 +11,7 @@ import com.facebook.react.bridge.Promise;
  * @author liujc
  * @ClassName TestReactModule
  * @date 2019/7/10
- * @Description (这里用一句话描述这个类的作用)
+ * @Description 此处就是RN与Android原生交互的真实实现，主要是实现BaseNativeMethod接口，也可自己写NativeModule实现
  */
 public class TestNativeMethod implements BaseNativeMethod {
 

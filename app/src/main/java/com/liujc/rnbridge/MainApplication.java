@@ -3,6 +3,7 @@ package com.liujc.rnbridge;
 import android.app.Application;
 
 import com.cc.rnbridge.RNBridge;
+import com.cc.rnbridge.impl.BridgeConfig;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -15,32 +16,33 @@ import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
 
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    @Override
-    public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
-    }
-
-    @Override
-    protected List<ReactPackage> getPackages() {
-      return RNBridge.getInstance().getReactPackages();
-    }
-
-  };
-
   @Override
   public ReactNativeHost getReactNativeHost() {
-    return mReactNativeHost;
+    return RNBridge.getInstance().getReactNativeHost(this);
   }
 
   @Override
   public void onCreate() {
     super.onCreate();
-    RNBridge.getInstance().initRNConfig(this,
-            BuildConfig.DEBUG, Arrays.<ReactPackage>asList(
-                    new MainReactPackage(),
-                    new TestReactPackage()
-            ));
+    initRNConfig();
+  }
+
+  private void initRNConfig() {
+    RNBridge.getInstance().initRNConfig(this, new BridgeConfig() {
+
+      @Override
+      public List<ReactPackage> getReactPackages() {
+        return Arrays.<ReactPackage>asList(new MainReactPackage(),
+                new TestReactPackage());
+      }
+
+      @Override
+      public boolean isDebug() {
+        return BuildConfig.DEBUG;
+      }
+
+    });
     SoLoader.init(this, /* native exopackage */ false);
+
   }
 }
