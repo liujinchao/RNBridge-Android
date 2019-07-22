@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.cc.rnbridge.entity.Event;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.List;
@@ -33,7 +32,11 @@ public class RNEventEmitter {
     }
 
     public static void sendEvent(Event event) {
-        sendEvent(DEFAULT_EVENT_NAME, RNMapUtil.toWritableMap(event));
+        sendEvent(DEFAULT_EVENT_NAME, event);
+    }
+
+    public static void sendEvent(String eventName, Event event) {
+        sendEvent(eventName, RNMapUtil.toWritableMap(event));
     }
 
     public static void sendEvent(String eventName) {
@@ -58,16 +61,6 @@ public class RNEventEmitter {
 
     public static void sendEvent(String eventName, Object msg) {
         sendEvent(mReactContext, eventName, msg);
-    }
-
-    private static void sendEvent(ReactApplicationContext reactContext, String eventName, WritableMap params) {
-        if (reactContext == null) {
-            Log.e(TAG, "ReactContext is null");
-            throw new NullPointerException("ReactContext is null");
-        }
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
     }
 
     private static void sendEvent(ReactApplicationContext reactContext, String eventName, Object params) {

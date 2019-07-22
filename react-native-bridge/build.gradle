@@ -28,5 +28,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly 'com.facebook.react:react-native:+'
-    implementation 'com.alibaba:fastjson:1.1.71.android'
+    api 'com.alibaba:fastjson:1.1.71.android'
 }
+
+
