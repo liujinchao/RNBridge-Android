@@ -89,18 +89,21 @@ public class RNRemoteActivity extends AppCompatActivity {
     private void initTestRemoteBundle() {
         TextView toRNTestOne = findViewById(R.id.toRNTestOne1);
         toRNTestOne.setOnClickListener(v -> {
-            mBundleConfig  = loadRemoteBundle(KEY_BUNDLE_ONE,"1.0.1");
-            if (mBundleConfig != null){
-               updateJsBundle();
-            }
+//            mBundleConfig  = loadRemoteBundle(KEY_BUNDLE_ONE,"1.0.1");
+//            if (mBundleConfig != null){
+//               updateJsBundle();
+//            }
+            BundleUpdateActivity.openRNBundle(RNRemoteActivity.this, "/testOne?age=18&bundleId="+ BundleUpdateActivity.KEY_BUNDLE_ONE, null);
         });
 
         TextView toRNTestTwo = findViewById(R.id.toRNTestTwo);
         toRNTestTwo.setOnClickListener(v -> {
-            mBundleConfig = loadRemoteBundle(KEY_BUNDLE_TWO, BuildConfig.BUNDLE_TWO_VERSION);
-            if (mBundleConfig != null){
-                updateJsBundle();
-            }
+//            mBundleConfig = loadRemoteBundle(KEY_BUNDLE_TWO, BuildConfig.BUNDLE_TWO_VERSION);
+//            if (mBundleConfig != null){
+//                updateJsBundle();
+//            }
+            BundleUpdateActivity.openRNBundle(RNRemoteActivity.this, "/testTwo?age=20&bundleId="+ BundleUpdateActivity.KEY_BUNDLE_TWO, null);
+
         });
 
         TextView toRNTestTwo2 = findViewById(R.id.toRNTestTwo2);

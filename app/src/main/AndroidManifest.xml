@@ -36,6 +36,20 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".BundleUpdateActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/activityTransparent">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="rnbridge"
+                    android:host="app.liujc.com" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
     </application>

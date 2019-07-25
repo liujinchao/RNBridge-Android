@@ -1,7 +1,5 @@
 package com.cc.rnbridge.moudles;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -10,7 +8,6 @@ import com.alibaba.fastjson.TypeReference;
 import com.cc.rnbridge.base.BaseNativeMethod;
 import com.cc.rnbridge.entity.Event;
 import com.facebook.infer.annotation.Assertions;
-import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -25,7 +22,7 @@ import javax.annotation.Nonnull;
  * @date 2019/7/10
  * @Description Android原生预留给RN的调用方法
  */
-final class BridgeNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener {
+final class BridgeNativeModule extends ReactContextBaseJavaModule {
 
     public static final String DEFAULT_MODULE_NAME = "BridgeNativeModule";
 
@@ -58,22 +55,6 @@ final class BridgeNativeModule extends ReactContextBaseJavaModule implements Act
         }else {
             promise.reject(new Throwable("消息实体不能为空"));
         }
-    }
-
-    @ReactMethod
-    public void startActivityForResult(String targetPath, Promise promise) {
-        Activity mActivity = getCurrentActivity();
-        baseReactMethod.startActivityForResult(mActivity, targetPath, promise);
-    }
-
-    @Override
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-        baseReactMethod.onActivityResult(activity, requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        baseReactMethod.onNewIntent(intent);
     }
 
     @Nonnull

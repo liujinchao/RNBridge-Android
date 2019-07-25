@@ -23,7 +23,7 @@ public class BundleConfig implements Parcelable{
     private String jsMainMoudlePath;    // bundle文件的启动入口js文件
     private Bundle appProperties;       // 需要携带给RN页面的参数
 
-    public BundleConfig() {
+    private BundleConfig() {
     }
 
     private BundleConfig(BundleConfigBuild builder) {
@@ -75,6 +75,30 @@ public class BundleConfig implements Parcelable{
             return localBundleFile.getAbsolutePath();
         }
         return null;
+    }
+
+    public void setBundleId(Integer bundleId) {
+        this.bundleId = bundleId;
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+    }
+
+    public void setBundleVersion(String bundleVersion) {
+        this.bundleVersion = bundleVersion;
+    }
+
+    public void setBundleAssetName(String bundleAssetName) {
+        this.bundleAssetName = bundleAssetName;
+    }
+
+    public void setJsMainMoudlePath(String jsMainMoudlePath) {
+        this.jsMainMoudlePath = jsMainMoudlePath;
+    }
+
+    public void setAppProperties(Bundle appProperties) {
+        this.appProperties = appProperties;
     }
 
     public void setBundleFilePath(String bundleFilePath) {

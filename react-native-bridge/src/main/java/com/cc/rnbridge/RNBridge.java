@@ -34,7 +34,7 @@ public class RNBridge {
     private Application mApplication;
     private boolean debug;
     private List<ReactPackage> reactPackages;
-    private BundleConfig mBundleConfig = new BundleConfig();
+    private BundleConfig mBundleConfig = new BundleConfig.BundleConfigBuild().build();
 
     private static final SparseArray<ReactNativeHost> nativeHostArray = new SparseArray();
 
@@ -167,12 +167,18 @@ public class RNBridge {
 
     private void startReactApplication(ReactRootView mReactRootView, String moduleName,Bundle appProperties){
         if (mReactRootView != null && mReactRootView.getReactInstanceManager() == null){
-            mReactRootView.startReactApplication(mReactInstanceManager, moduleName, appProperties);
+            Bundle properties = new Bundle();
+            properties.putBundle("appProperties", appProperties);
+            mReactRootView.startReactApplication(mReactInstanceManager, moduleName, properties);
         }
     }
 
     public ReactInstanceManager getReactInstanceManager(int bundleId){
         return reactInstanceManagerArray.get(bundleId);
+    }
+
+    public static String getBridgeVersion(){
+        return BuildConfig.VERSION_NAME;
     }
 
     private ReactNativeHost mReactNativeHost;

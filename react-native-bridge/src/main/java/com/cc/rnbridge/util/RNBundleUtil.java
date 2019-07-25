@@ -40,7 +40,7 @@ public class RNBundleUtil {
 
     public static RNBundleUtil getInstance() {
         if (defaultInstance == null) {
-            synchronized (RNBridge.class) {
+            synchronized (RNBundleUtil.class) {
                 if (defaultInstance == null) {
                     defaultInstance = new RNBundleUtil();
                 }
@@ -167,6 +167,7 @@ public class RNBundleUtil {
 
 
     /*以下简陋版下载解压流程，尽量前端各自实现*/
+    // TODO: 2019/7/25 以下简陋版下载解压流程，尽量前端各自实现
     private DownloadManager mDownLoadManager;
     private long mDownloadId;
     private UpdateBundleCallBack mUpdateBundleCb;
