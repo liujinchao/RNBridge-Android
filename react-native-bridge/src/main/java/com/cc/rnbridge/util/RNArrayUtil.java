@@ -94,17 +94,18 @@ public class RNArrayUtil {
         return Arguments.fromList(arrayList);
     }
 
-    public static ArrayList toArrayList(ReadableArray readableArray) {
-        return Arguments.toList(readableArray);
-    }
-    public static WritableArray toWritableArray(Object[] args) {
-        return Arguments.fromJavaArgs(args);
-    }
     public static WritableArray toWritableArray(Object array) {
         return Arguments.fromArray(array);
     }
 
-    public static WritableArray toWritableArray(List objects) {
+    public static ArrayList toArrayList(ReadableArray readableArray) {
+        return Arguments.toList(readableArray);
+    }
+    public static WritableArray fromJavaArgs(Object[] args) {
+        return Arguments.fromJavaArgs(args);
+    }
+
+    public static WritableArray makeNativeArray(List objects) {
         return Arguments.makeNativeArray(objects);
     }
 }

@@ -60,6 +60,9 @@ public class ReactBridgeActivity extends AppCompatActivity implements DefaultHar
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(targetUrl));
         if (bundleConfig != null){
+            if (appProperties != null && appProperties.size() > 0){
+                bundleConfig.setAppProperties(appProperties);
+            }
             intent.putExtra(KEY_BUNDLE_CONFIG, bundleConfig);
         }
         mContext.startActivity(intent);
