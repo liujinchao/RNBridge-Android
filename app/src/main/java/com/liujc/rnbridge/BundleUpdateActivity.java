@@ -6,12 +6,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.cc.rnbridge.base.ReactBridgeActivity;
+import com.cc.rnbridge.base.BaseBridgeActivity;
 import com.cc.rnbridge.entity.BundleConfig;
 import com.cc.rnbridge.util.RNBundleUtil;
 import com.liujc.rnbridge.util.BundleVersionInfo;
@@ -31,13 +29,10 @@ import static com.cc.rnbridge.base.ReactBridgeActivity.openRnUrl;
  * @date: 2019/7/24
  * @Description: RN bundle版本检查中转页, 在客户端统一处理bundle版本检查处理
  */
-public class BundleUpdateActivity extends AppCompatActivity {
+public class BundleUpdateActivity extends BaseBridgeActivity {
 
     public static final int KEY_BUNDLE_ONE = 1001;
     public static final int KEY_BUNDLE_TWO = 1002;
-
-    //远程debug调试的budleId
-    public static final int KEY_BUNDLE_ID_DEBUG = 10011;
 
     public static final String KEY_BUNDLE_ID = "bundleId";
     public static final String DEFAULT_RN_HOST = "rnbridge://app.liujc.com";
@@ -66,27 +61,22 @@ public class BundleUpdateActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initIntentData();
-
+    protected String getOriginScheme() {
+        return DEFAULT_RN_HOST;
     }
 
-    private void initIntentData() {
-        if (getIntent() == null){
-            finishActivity();
-            return;
-        }
-        Uri uri = getIntent().getData();
-        if (debugBundle(uri)){
-            finishActivity();
-            return;
-        }
+    @Override
+    protected String getTargetScheme() {
+        return null;
+    }
 
+    @Override
+    protected void handleEvent(String targetUrl) {
+        this.targetUrl = targetUrl;
+        Uri uri = Uri.parse(targetUrl);
         String idStr = null;
         if (uri != null){
             idStr = uri.getQueryParameter(KEY_BUNDLE_ID);
-            targetUrl = replaceRNBridgeHost(uri.toString());
         }
         if (!TextUtils.isEmpty(idStr)){
             mBundleId = Integer.valueOf(idStr);
@@ -98,35 +88,6 @@ public class BundleUpdateActivity extends AppCompatActivity {
             }
             updateJsBundle();
         }
-    }
-
-    /**
-     * 路由替换成RN页面渲染路由
-     * @param targetUrl
-     * @return
-     */
-    private String replaceRNBridgeHost(String targetUrl) {
-        if (!TextUtils.isEmpty(targetUrl)){
-            targetUrl = targetUrl.replace(DEFAULT_RN_HOST, ReactBridgeActivity.DEFAULT_RN_HOST);
-        }
-        return targetUrl;
-    }
-
-    private boolean debugBundle(Uri uri) {
-        if (uri == null){
-            return false;
-        }
-        String url = replaceRNBridgeHost(uri.toString());
-        String testModuleName = uri.getQueryParameter("BridgeTest");
-        if (!TextUtils.isEmpty(testModuleName)){
-            mBundleConfig = new BundleConfig.BundleConfigBuild()
-                    .setBundleId(KEY_BUNDLE_ID_DEBUG)
-                    .setModuleName(testModuleName)
-                    .build();
-            ReactBridgeActivity.openRnUrl(BundleUpdateActivity.this, url ,mBundleConfig);
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -189,7 +150,7 @@ public class BundleUpdateActivity extends AppCompatActivity {
                                 downLoadBundle(bundleInfo.getBundleUrl());
                             }else {
                                 showMsg("新功能正在开发中，敬请期待");
-                                finishActivity();
+                                finishThisActivity();
                             }
                         }else if (bundleInfo.isCanUse()){
                             showMsg("当前已是最新版本");
@@ -197,12 +158,12 @@ public class BundleUpdateActivity extends AppCompatActivity {
                             loadBundle(getBundleFilePath());
                         }else {
                             showMsg("新功能正在开发中，敬请期待");
-                            finishActivity();
+                            finishThisActivity();
                         }
                     }
                 }, throwable -> {
                     showMsg(throwable.getLocalizedMessage());
-                    finishActivity();
+                    finishThisActivity();
                 });
     }
 
@@ -232,7 +193,7 @@ public class BundleUpdateActivity extends AppCompatActivity {
         }
         mBundleConfig.setBundleFilePath(bundlePath);
         openRnUrl(BundleUpdateActivity.this, targetUrl ,mBundleConfig);
-        finishActivity();
+        finishThisActivity();
     }
 
     @Override
@@ -243,7 +204,7 @@ public class BundleUpdateActivity extends AppCompatActivity {
         }
     }
 
-    private void finishActivity(){
-        finish();
+    private void finishThisActivity(){
+        finishActivity();
     }
 }

@@ -34,7 +34,7 @@ dependencies {
     implementation 'com.facebook.react:react-native:+'
     implementation project(':react-native-bridge')
 //    implementation 'com.alibaba:fastjson:1.1.71.android'
-//    implementation 'com.android.util:react-native-bridge:1.0.1'
+//    implementation 'com.android.util:react-native-bridge:1.0.2'
     /* Retrofit */
     implementation 'com.google.code.gson:gson:2.8.0'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
