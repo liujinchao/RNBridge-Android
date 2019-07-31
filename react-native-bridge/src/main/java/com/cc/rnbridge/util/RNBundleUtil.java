@@ -2,19 +2,15 @@ package com.cc.rnbridge.util;
 
 import android.annotation.TargetApi;
 import android.app.Application;
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 
 import com.cc.rnbridge.RNBridge;
+import com.cc.rnbridge.util.download.DownloadRequest;
+import com.cc.rnbridge.util.download.FileDownloadManager;
+import com.cc.rnbridge.util.download.FileDownloadManagerListener;
+import com.cc.rnbridge.util.download.OkHttpDownload;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -111,6 +107,7 @@ public class RNBundleUtil {
             return false;
         }
     }
+
     /**
      * 删除指定文件或者文件夹
      * @param dir
@@ -165,119 +162,21 @@ public class RNBundleUtil {
         return isGranted;
     }
 
-
     /*以下简陋版下载解压流程，尽量前端各自实现*/
     // TODO: 2019/7/25 以下简陋版下载解压流程，尽量前端各自实现
-    private DownloadManager mDownLoadManager;
-    private long mDownloadId;
-    private UpdateBundleCallBack mUpdateBundleCb;
-    private File mBundleZipFile;
-    private final String KEY_BUNDLE_DEFAULT_PATH_FILE = "finalbundle"; //bundle.zip文件保存的默认文件夹名称
-    private String mBundleFileName;
-    /**
-     * 下载对应的bundle.zip文件
-     * @param bundleUrl 下载链接
-     * @param updateBundleCallBack
-     * 下载流程或权限检查尽量前端自己实现，此处仅提供的简陋版下载
-     */
-    @Deprecated
-    public void downLoadBundle(String bundleUrl, UpdateBundleCallBack updateBundleCallBack){
-        if (TextUtils.isEmpty(bundleUrl)){
-            return;
-        }
-        mUpdateBundleCb = updateBundleCallBack;
-        mBundleFileName = bundleUrl.substring(bundleUrl.lastIndexOf("/")+1);
-        String defaultSavePath = getApplication().getExternalCacheDir()+"/" + KEY_BUNDLE_DEFAULT_PATH_FILE;
-        mBundleZipFile = new File(defaultSavePath, mBundleFileName);
-        //删除已下载的zip历史文件
-        if (mBundleZipFile.exists()){
-            RNBundleUtil.deleteDir(mBundleZipFile);
-        }
+    public void toDownLoadBundle(String bundleUrl, FileDownloadManagerListener downloadManagerListener) {
+        toDownLoadBundle(bundleUrl, new OkHttpDownload(), downloadManagerListener);
+    }
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(bundleUrl));
-        //request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-        request.setDestinationUri(Uri.parse("file://"+mBundleZipFile.getAbsolutePath()));
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
-        request.setVisibleInDownloadsUi(true);
-        mDownLoadManager = (DownloadManager) getApplication().getSystemService(Context.DOWNLOAD_SERVICE);
-        mDownloadId = mDownLoadManager.enqueue(request);
-        getApplication().registerReceiver(receiver,
-                new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    public void toDownLoadBundle(String bundleUrl, DownloadRequest downloadRequest, FileDownloadManagerListener downloadManagerListener) {
+        new FileDownloadManager(getApplication(), bundleUrl)
+                .setListener(downloadManagerListener)
+                .setDownloadRequest(downloadRequest)
+                .download();
     }
 
     private Application getApplication() {
         return RNBridge.getInstance().getApplication();
-    }
-
-    //广播接受者，接收下载状态
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            checkDownloadStatus();
-        }
-    };
-    //检查下载状态
-    private void checkDownloadStatus() {
-        DownloadManager.Query query = new DownloadManager.Query();
-        query.setFilterById(mDownloadId);//筛选下载任务，传入任务ID，可变参数
-        Cursor c = mDownLoadManager.query(query);
-        if (c.moveToFirst()) {
-            int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
-            switch (status) {
-                case DownloadManager.STATUS_PAUSED:
-                    System.out.println("下载暂停");
-                case DownloadManager.STATUS_PENDING:
-                    System.out.println("下载延迟");
-                case DownloadManager.STATUS_RUNNING:
-                    System.out.println("正在下载");
-                    break;
-                case DownloadManager.STATUS_SUCCESSFUL:
-                    System.out.println("下载成功");
-                    replaceBundle();
-                    break;
-                case DownloadManager.STATUS_FAILED:
-                    System.out.println("下载失败");
-                    break;
-            }
-        }
-    }
-    protected void replaceBundle() {
-        String defaultSavePath = getApplication().getExternalCacheDir()+"/"+KEY_BUNDLE_DEFAULT_PATH_FILE;
-        File reactDir = new File(defaultSavePath);
-        if(!reactDir.exists()){
-            reactDir.mkdirs();
-        }
-        if (mBundleZipFile == null || !mBundleZipFile.exists()){
-            sendMsgToCb(null);
-            return;
-        }
-        boolean result = RNBundleUtil.unzip(mBundleZipFile);
-        if(result){//解压成功后保存当前最新bundle的版本
-            if (!TextUtils.isEmpty(mBundleFileName) && mBundleFileName.contains(".")) {
-                sendMsgToCb(defaultSavePath + "/"+mBundleFileName.substring(0, mBundleFileName.lastIndexOf(".")));
-            }else {
-                sendMsgToCb(defaultSavePath + "/"+mBundleFileName);
-            }
-        }else{//解压失败应该删除掉有问题的文件，防止RN加载错误的bundle文件
-            sendMsgToCb(null);
-            System.out.println("解压失败");
-            File reactbundleDir = new File(defaultSavePath);
-            RNBundleUtil.deleteDir(reactbundleDir);
-        }
-    }
-
-    private void sendMsgToCb(String path){
-        if (mUpdateBundleCb != null){
-            mUpdateBundleCb.getUnZipBundlePath(path);
-        }
-    }
-
-    public interface UpdateBundleCallBack {
-        /**
-         * 解压文件夹路径
-         * @param path
-         */
-        void getUnZipBundlePath(String path);
     }
 
 }

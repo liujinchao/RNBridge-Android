@@ -12,6 +12,7 @@ import com.cc.rnbridge.entity.Event;
 import com.cc.rnbridge.util.RNEventEmitter;
 import com.facebook.react.ReactRootView;
 import com.liujc.rnbridge.rn.TestEvent;
+import com.liujc.rnbridge.util.SpUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private void initTestRemoteBundle() {
         TextView toLoadRemoteBundleTest = findViewById(R.id.toLoadRemoteBundleTest);
         toLoadRemoteBundleTest.setOnClickListener(v -> {
+            SpUtil.setBundleVersion(MainActivity.this, 100001,"V1.2.3");
             startActivity(new Intent(MainActivity.this, RNRemoteActivity.class));
         });
     }

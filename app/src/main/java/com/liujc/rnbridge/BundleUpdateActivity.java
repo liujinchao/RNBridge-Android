@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.cc.rnbridge.base.BaseBridgeActivity;
 import com.cc.rnbridge.entity.BundleConfig;
 import com.cc.rnbridge.util.RNBundleUtil;
+import com.cc.rnbridge.util.download.FileDownloadManagerListener;
 import com.liujc.rnbridge.util.BundleVersionInfo;
 import com.liujc.rnbridge.util.net.CommonService;
 import com.liujc.rnbridge.util.net.NetHelper;
@@ -173,7 +175,7 @@ public class BundleUpdateActivity extends BaseBridgeActivity {
             return mBundleConfig.getBundleFilePath();
         }
         // TODO: 2019/7/25 此处默认zip包和的名称和bundle的名称一致，路径可自定义
-        return getExternalCacheDir()+"/finalbundle/"+mBundleConfig.getBundleAssetName()+ "/" + mBundleConfig.getBundleAssetName();
+        return getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)+"/finalbundle/"+mBundleConfig.getBundleAssetName()+ "/" + mBundleConfig.getBundleAssetName();
     }
 
     private void showMsg(String msg){
@@ -181,7 +183,25 @@ public class BundleUpdateActivity extends BaseBridgeActivity {
     }
 
     private void downLoadBundle(String bundleUrl) {
-        RNBundleUtil.getInstance().downLoadBundle(bundleUrl, path -> loadBundle(path+"/"+mBundleConfig.getBundleAssetName()));
+        RNBundleUtil.getInstance().toDownLoadBundle(bundleUrl, new FileDownloadManagerListener(){
+
+            @Override
+            public void onPrepare() {
+                showMsg("准备下载");
+            }
+
+            @Override
+            public void onSuccess(String path) {
+                showMsg("现在更新完成");
+
+                BundleUpdateActivity.this.loadBundle(path + "/" + mBundleConfig.getBundleAssetName());
+            }
+
+            @Override
+            public void onFailed(Throwable throwable) {
+                showMsg("下载失败"+throwable.getLocalizedMessage());
+            }
+        });
     }
 
     private void loadBundle(String bundleFilePath){

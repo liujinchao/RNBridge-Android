@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.cc.rnbridge.base.ReactBridgeActivity;
 import com.cc.rnbridge.entity.BundleConfig;
 import com.cc.rnbridge.util.RNBundleUtil;
+import com.cc.rnbridge.util.download.FileDownloadManagerListener;
 import com.liujc.rnbridge.util.BundleVersionInfo;
 import com.liujc.rnbridge.util.net.CommonService;
 import com.liujc.rnbridge.util.net.NetHelper;
@@ -223,7 +224,24 @@ public class RNRemoteActivity extends AppCompatActivity {
     }
 
     private void downLoadBundle(String bundleUrl) {
-        RNBundleUtil.getInstance().downLoadBundle(bundleUrl, path -> loadBundle(path));
+        RNBundleUtil.getInstance().toDownLoadBundle(bundleUrl, new FileDownloadManagerListener(){
+
+            @Override
+            public void onPrepare() {
+                showMsg("准备下载");
+            }
+
+            @Override
+            public void onSuccess(String path) {
+                showMsg("现在更新完成");
+                loadBundle(path + "/" + mBundleConfig.getBundleAssetName());
+            }
+
+            @Override
+            public void onFailed(Throwable throwable) {
+                showMsg("下载失败"+throwable.getLocalizedMessage());
+            }
+        });
     }
 
     private void loadBundle(String path){

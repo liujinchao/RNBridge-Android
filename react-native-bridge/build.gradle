@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.0.2"
+        versionCode 3
+        versionName "1.0.3"
 
         manifestPlaceholders = [
                 APP_SCHEME :  "rnbridge", //app  scheme协议
@@ -28,7 +28,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly 'com.facebook.react:react-native:+'
-    api 'com.alibaba:fastjson:1.1.71.android'
+    implementation 'com.alibaba:fastjson:1.1.71.android'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
 }
 
 
